@@ -1,0 +1,1 @@
+Placeholder folder where to place certificate of IOT Core: rename it with device prefix eg. device2.public.key
