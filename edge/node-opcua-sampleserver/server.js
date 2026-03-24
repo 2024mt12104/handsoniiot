@@ -41,7 +41,7 @@ function constructAddressSpace(server) {
             }
         }
     });
-    
+
 
     const nodeVariable2 = namespace.addVariable({
         componentOf: myDevice,
@@ -94,14 +94,14 @@ function constructAddressSpace(server) {
         minimumSamplingInterval: 1000,
         value: {
             get: () => {
-const previousUsage = process.cpuUsage();
-              const startDate = Date.now();
-              while (Date.now() - startDate < 500);
+                const previousUsage = process.cpuUsage();
+                const startDate = Date.now();
+                while (Date.now() - startDate < 500);
 
-// At this moment you can expect result 100%
-// Time is *1000 because cpuUsage is in us (microseconds)
-const usage = process.cpuUsage(previousUsage);
-const value = 100 * (usage.user + usage.system) / ((Date.now() - startDate) * 1000)
+                // At this moment you can expect result 100%
+                // Time is *1000 because cpuUsage is in us (microseconds)
+                const usage = process.cpuUsage(previousUsage);
+                const value = 100 * (usage.user + usage.system) / ((Date.now() - startDate) * 1000)
                 return new Variant({ dataType: DataType.Double, value: value });
             }
         }
@@ -137,7 +137,7 @@ const value = 100 * (usage.user + usage.system) / ((Date.now() - startDate) * 10
         await server.start();
 
         console.log("Server is now listening ... ( press CTRL+C to stop) ");
-        server.endpoints[0].endpointDescriptions().forEach(function(endpoint) {
+        server.endpoints[0].endpointDescriptions().forEach(function (endpoint) {
             console.log(endpoint.endpointUrl, endpoint.securityMode.toString(), endpoint.securityPolicyUri.toString());
         });
 

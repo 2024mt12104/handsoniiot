@@ -1,11 +1,25 @@
-$cid = 'eee61c7cae94b42f29d99e516358a01532d4cfbd24f76b699305e912627c79df'
-$ak = aws configure get aws_access_key_id
-$sk = aws configure get aws_secret_access_key
-$st = aws configure get aws_session_token
+$cid = '6a3adad2cac458dace1df087facb65a8f26c0d2957b7157aac2c011661413bfc'
+
+# Prefer exported env credentials; fall back to aws config values.
+$ak = if ($env:AWS_ACCESS_KEY_ID) { $env:AWS_ACCESS_KEY_ID } else { aws configure get aws_access_key_id }
+$sk = if ($env:AWS_SECRET_ACCESS_KEY) { $env:AWS_SECRET_ACCESS_KEY } else { aws configure get aws_secret_access_key }
+$st = if ($env:AWS_SESSION_TOKEN) { $env:AWS_SESSION_TOKEN } else { aws configure get aws_session_token }
 
 if (-not $ak -or -not $sk) {
 	Write-Error 'Host AWS credentials not available via aws configure get.'
 	exit 1
+}
+
+if ($ak.StartsWith('ASIA') -and -not $st) {
+  Write-Error 'Temporary AWS credentials detected but AWS_SESSION_TOKEN is missing.'
+  exit 1
+}
+
+# Validate credentials before invoking docker exec to fail with a clear message.
+aws sts get-caller-identity | Out-Null
+if ($LASTEXITCODE -ne 0) {
+  Write-Error 'Host AWS credentials are invalid or expired. Refresh credentials and retry.'
+  exit 1
 }
 
 $envs = @(
